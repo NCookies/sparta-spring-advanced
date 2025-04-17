@@ -1,0 +1,5 @@
+spring:
+    profiles:
+        active: local
+        
+# jwt.secret.key 값은 Keys.secretKeyFor(SignatureAlgorithm.HS256) 실행 결과를 base64로 인코딩함
