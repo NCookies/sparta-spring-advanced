@@ -22,6 +22,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -29,24 +32,26 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ManagerServiceTest {
 
+    @InjectMocks
+    private ManagerService managerService;
+
     @Mock
     private ManagerRepository managerRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
     private TodoRepository todoRepository;
-    @InjectMocks
-    private ManagerService managerService;
 
     @Test
-    public void manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() {
+    public void manager_목록_조회_시_Todo가_없다면_InvalidRequestException_에러를_던진다() {
         // given
         long todoId = 1L;
         given(todoRepository.findById(todoId)).willReturn(Optional.empty());
 
         // when & then
-        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> managerService.getManagers(todoId));
-        assertEquals("Manager not found", exception.getMessage());
+        assertThatThrownBy(() -> managerService.getManagers(todoId))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("Todo not found");
     }
 
     @Test
@@ -64,6 +69,10 @@ class ManagerServiceTest {
         given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
 
         // when & then
+        assertThatThrownBy(() -> managerService.saveManager(authUser, todoId, managerSaveRequest))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
+
         InvalidRequestException exception = assertThrows(InvalidRequestException.class, () ->
             managerService.saveManager(authUser, todoId, managerSaveRequest)
         );
