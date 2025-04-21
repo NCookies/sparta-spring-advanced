@@ -38,3 +38,8 @@ out/
 
 ### properties ###
 *.properties
+
+### custom
+src/main/resources/application-local.yml
+db/mysql/data
+htmlReport
