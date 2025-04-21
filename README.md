@@ -225,3 +225,7 @@ JWT 기반 인증은 빠르고 stateless하다는 장점이 있지만, 발급 �
 | **권한 검증 방식** | 토큰 기반 1차 검증만 수행 | 토큰 + DB 기반 2중 검증 | 보안성 ↑, 성능 ↓ |
 | **권한 변경 반영 시점** | 다음 로그인 시 반영 | 실시간 반영 가능 | 응답 속도 ↓ |
 | **예외 처리** | 미정의 (보안 허점 존재) | `UnauthorizedAdminAccessException` + 403 Forbidden | - |
+
+# 테스트 커버리지
+
+![img.png](documents/test-coverage.png)
